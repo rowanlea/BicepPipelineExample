@@ -28,3 +28,11 @@ steps:
     csmFile: './main.bicep'
     overrideParameters: '-acrName $(registryName)'
     deploymentMode: 'Incremental'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      docker login $(registryName).azurecr.io --username 77615f9b-2bbf-4285-827c-7b4bcff54a17 --password ccU8Q~j-bEUoDpXb0hwENex3QM_FhhyZeXalOa3j
+      docker build -t $(registryName).azurecr.io/$(containerName):build-tag-1 .
+      docker push $(registryName).azurecr.io/$(containerName):build-tag-1
