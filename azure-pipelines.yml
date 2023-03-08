@@ -6,14 +6,25 @@
 trigger:
 - main
 
+variables:
+- name: registryName
+  value: newContainerRegistry
+- name: containerName
+  value: new-container
+
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Bicep Example'
+    subscriptionId: '13181d08-adda-48e7-a1f0-bc5f8e2927b2'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'rg-bicep-deployment'
+    location: 'UK South'
+    templateLocation: 'Linked artifact'
+    csmFile: './main.bicep'
+    overrideParameters: '-acrName $(registryName)'
+    deploymentMode: 'Incremental'
