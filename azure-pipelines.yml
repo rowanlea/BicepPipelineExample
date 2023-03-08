@@ -8,7 +8,7 @@ trigger:
 
 variables:
 - name: registryName
-  value: newContainerRegistry
+  value: rlBicepExample
 - name: containerName
   value: new-container
 
