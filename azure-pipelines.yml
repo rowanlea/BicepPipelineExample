@@ -1,0 +1,38 @@
+# Starter pipeline 
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+variables:
+- name: registryName
+  value: rlBicepExample
+- name: containerName
+  value: new-container
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Bicep Example'
+    subscriptionId: '13181d08-adda-48e7-a1f0-bc5f8e2927b2'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'rg-bicep-deployment'
+    location: 'UK South'
+    templateLocation: 'Linked artifact'
+    csmFile: './main.bicep'
+    overrideParameters: '-acrName $(registryName)'
+    deploymentMode: 'Incremental'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      docker login $(registryName).azurecr.io --username 77615f9b-2bbf-4285-827c-7b4bcff54a17 --password ccU8Q~j-bEUoDpXb0hwENex3QM_FhhyZeXalOa3j
+      docker build -t $(registryName).azurecr.io/$(containerName):build-tag-1 .
+      docker push $(registryName).azurecr.io/$(containerName):build-tag-1
