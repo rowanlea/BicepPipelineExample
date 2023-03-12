@@ -33,6 +33,6 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      docker login $(registryName).azurecr.io --username 86de867f-e962-4b1b-af4f-92418eb3f5d7 --password eVF8Q~H1aN57nvWXsBjcopwhhgv0rr.uuX5irbgR
+      docker login $(registryName).azurecr.io --username [appId] --password [secret]
       docker build -t $(registryName).azurecr.io/$(containerName):build-tag-1 .
       docker push $(registryName).azurecr.io/$(containerName):build-tag-1
